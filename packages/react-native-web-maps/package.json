@@ -91,7 +91,7 @@
   },
   "react-native-builder-bob": {
     "source": "src",
-    "output": "dist",
+    "output": "../../dist",
     "targets": [
       "commonjs",
       "module",
