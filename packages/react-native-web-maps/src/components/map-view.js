@@ -1,5 +1,4 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import type { ForwardedRef } from 'react';
 import React, {
   forwardRef,
   memo,
@@ -9,17 +8,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import type {
-  Address,
-  Camera,
-  EdgePadding,
-  LatLng,
-  MapViewProps,
-  Point,
-  Region,
-  SnapshotOptions,
-} from 'react-native-maps';
-import type RNMapView from 'react-native-maps';
 import { mapMouseEventToMapEvent } from '../utils/mouse-event';
 import { transformRNCameraObject } from '../utils/camera';
 import {
@@ -29,16 +17,10 @@ import {
 import { useUserLocation } from '../hooks/use-user-location';
 import { UserLocationMarker } from './user-location-marker';
 import * as Location from 'expo-location';
-
-function _MapView(
-  props: MapViewProps & { nonce: string },
-  ref: ForwardedRef<Partial<RNMapView>>
-) {
+function _MapView(props, ref) {
   // State
-
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [isGesture, setIsGesture] = useState<boolean>(false);
-
+  const [map, setMap] = useState(null);
+  const [isGesture, setIsGesture] = useState(false);
   const userLocation = useUserLocation({
     showUserLocation: props.showsUserLocation || false,
     requestPermission:
@@ -46,26 +28,21 @@ function _MapView(
     onUserLocationChange: props.onUserLocationChange,
     followUserLocation: props.followsUserLocation || false,
   });
-
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: props.googleMapsApiKey || '',
     nonce: props.nonce,
   });
-
   // Callbacks
-
   const _onMapReady = useCallback(
-    (_map: google.maps.Map) => {
+    (_map) => {
       setMap(_map);
       props.onMapReady?.();
     },
     [map, props.onMapReady]
   );
-
   const _onDragStart = useCallback(() => {
     setIsGesture(true);
   }, []);
-
   const _onRegionChange = useCallback(() => {
     const bounds = map?.getBounds();
     if (bounds) {
@@ -85,7 +62,6 @@ function _MapView(
       );
     }
   }, [map, props.onRegionChange, isGesture]);
-
   const _onRegionChangeComplete = useCallback(() => {
     const bounds = map?.getBounds();
     if (bounds) {
@@ -106,13 +82,11 @@ function _MapView(
     }
     setIsGesture(false);
   }, [map, props.onRegionChange, isGesture]);
-
   // Ref handle
-
   useImperativeHandle(
     ref,
     () => ({
-      async getCamera(): Promise<Camera> {
+      async getCamera() {
         const center = map?.getCenter();
         return {
           altitude: 0,
@@ -125,24 +99,16 @@ function _MapView(
           },
         };
       },
-      setCamera(camera: Partial<Camera>): void {
+      setCamera(camera) {
         map?.moveCamera(transformRNCameraObject(camera));
       },
-      animateCamera(
-        camera: Partial<Camera>,
-        _opts?: { duration?: number }
-      ): void {
+      animateCamera(camera, _opts) {
         map?.moveCamera(transformRNCameraObject(camera));
       },
-      async getMapBoundaries(): Promise<{
-        northEast: LatLng;
-        southWest: LatLng;
-      }> {
+      async getMapBoundaries() {
         const bounds = map?.getBounds();
-
         const northEast = bounds?.getNorthEast();
         const southWest = bounds?.getSouthWest();
-
         return {
           northEast: {
             latitude: northEast?.lat() || 0,
@@ -154,33 +120,25 @@ function _MapView(
           },
         };
       },
-      animateToRegion(region: Region, _duration?: number): void {
+      animateToRegion(region, _duration) {
         const bounds = new google.maps.LatLngBounds();
-
         // Source: https://github.com/react-native-maps/react-native-maps/blob/master/android/src/main/java/com/airbnb/android/react/maps/AirMapView.java#L503
-
         // southWest
         bounds.extend({
           lat: region.latitude - region.latitudeDelta / 2,
           lng: region.longitude - region.longitudeDelta / 2,
         });
-
         // northEast
         bounds.extend({
           lat: region.latitude + region.latitudeDelta / 2,
           lng: region.longitude + region.longitudeDelta / 2,
         });
-
         // panToBounds not working??
         // map?.panToBounds(bounds);
         map?.fitBounds(bounds);
       },
-      fitToCoordinates(
-        coordinates?: LatLng[],
-        options?: { edgePadding?: EdgePadding; animated?: boolean }
-      ): void {
+      fitToCoordinates(coordinates, options) {
         const bounds = new google.maps.LatLngBounds();
-
         if (coordinates) {
           coordinates?.forEach((c) =>
             bounds.extend({
@@ -189,41 +147,36 @@ function _MapView(
             })
           );
         }
-
-        map?.fitBounds(bounds, options?.edgePadding as google.maps.Padding);
+        map?.fitBounds(bounds, options?.edgePadding);
       },
-      setMapBoundaries(northEast: LatLng, southWest: LatLng): void {
+      setMapBoundaries(northEast, southWest) {
         const bounds = new google.maps.LatLngBounds();
-
         bounds.extend({ lat: northEast.latitude, lng: northEast.longitude });
         bounds.extend({ lat: southWest.latitude, lng: southWest.longitude });
-
         map?.fitBounds(bounds);
       },
-      async pointForCoordinate(coordinate: LatLng): Promise<Point> {
+      async pointForCoordinate(coordinate) {
         const point = map?.getProjection()?.fromLatLngToPoint({
           lat: coordinate.latitude,
           lng: coordinate.longitude,
         });
         return point || { x: 0, y: 0 };
       },
-      async coordinateForPoint(point: Point): Promise<LatLng> {
+      async coordinateForPoint(point) {
         const coord = map
           ?.getProjection()
           ?.fromPointToLatLng(new google.maps.Point(point.x, point.y));
-
         return { latitude: coord?.lat() || 0, longitude: coord?.lng() || 0 };
       },
-      async takeSnapshot(_options?: SnapshotOptions): Promise<string> {
+      async takeSnapshot(_options) {
         logMethodNotImplementedWarning('takeSnapshot');
         return '';
       },
-      async addressForCoordinate(_coordinate: LatLng): Promise<Address> {
+      async addressForCoordinate(_coordinate) {
         Location.setGoogleApiKey(props.googleMapsApiKey || '');
         const [address] = await Location.reverseGeocodeAsync(_coordinate, {
           useGoogleMaps: true,
         });
-
         return address
           ? {
               administrativeArea: address.region || '',
@@ -236,46 +189,33 @@ function _MapView(
               subLocality: address.city || '',
               thoroughfare: '',
             }
-          : (null as unknown as Address);
+          : null;
       },
-      animateToNavigation(
-        _location: LatLng,
-        _bearing: number,
-        _angle: number,
-        _duration?: number
-      ): void {
+      animateToNavigation(_location, _bearing, _angle, _duration) {
         logDeprecationWarning('animateToNavigation');
       },
-      animateToCoordinate(_latLng: LatLng, _duration?: number): void {
+      animateToCoordinate(_latLng, _duration) {
         logDeprecationWarning('animateToCoordinate');
       },
-      animateToBearing(_bearing: number, _duration?: number): void {
+      animateToBearing(_bearing, _duration) {
         logDeprecationWarning('animateToBearing');
       },
-      animateToViewingAngle(_angle: number, _duration?: number): void {
+      animateToViewingAngle(_angle, _duration) {
         logDeprecationWarning('animateToViewingAngle');
       },
-      fitToElements(_options?: {
-        edgePadding?: EdgePadding;
-        animated?: boolean;
-      }): void {
+      fitToElements(_options) {
         logMethodNotImplementedWarning('fitToElements');
       },
-      fitToSuppliedMarkers(
-        _markers: string[],
-        _options?: { edgePadding?: EdgePadding; animated?: boolean }
-      ): void {
+      fitToSuppliedMarkers(_markers, _options) {
         logMethodNotImplementedWarning('fitToSuppliedMarkers');
       },
-      setIndoorActiveLevelIndex(_index: number): void {
+      setIndoorActiveLevelIndex(_index) {
         logMethodNotImplementedWarning('setIndoorActiveLevelIndex');
       },
     }),
     [map]
   );
-
   // Side effects
-
   useEffect(() => {
     if (props.followsUserLocation && userLocation) {
       map?.panTo({
@@ -284,38 +224,37 @@ function _MapView(
       });
     }
   }, [props.followsUserLocation, userLocation]);
-
   const mapNode = useMemo(
-    () => (
-      <GoogleMap
-        onLoad={_onMapReady}
-        onBoundsChanged={_onRegionChange}
-        onDragStart={_onDragStart}
-        onDragEnd={_onRegionChangeComplete}
-        mapContainerStyle={{ flex: 1 }}
-        zoom={props.initialCamera?.zoom || 3}
-        heading={props.initialCamera?.heading}
-        tilt={props.initialCamera?.pitch}
-        onDrag={() => {
-          const center = map?.getCenter();
-
-          props.onPanDrag?.(
-            mapMouseEventToMapEvent(
-              null,
-              center && { latitude: center.lat(), longitude: center.lng() },
-              map,
-              undefined
-            )
-          );
-        }}
-        onClick={(e) =>
-          props.onPress?.(mapMouseEventToMapEvent(e, null, map, 'press'))
-        }
-        onDblClick={(e) =>
-          props.onDoublePress?.(mapMouseEventToMapEvent(e, null, map, 'press'))
-        }
-        center={
-          map
+    () =>
+      React.createElement(
+        GoogleMap,
+        {
+          onLoad: _onMapReady,
+          onBoundsChanged: _onRegionChange,
+          onDragStart: _onDragStart,
+          onDragEnd: _onRegionChangeComplete,
+          mapContainerStyle: { flex: 1 },
+          zoom: props.initialCamera?.zoom || 3,
+          heading: props.initialCamera?.heading,
+          tilt: props.initialCamera?.pitch,
+          onDrag: () => {
+            const center = map?.getCenter();
+            props.onPanDrag?.(
+              mapMouseEventToMapEvent(
+                null,
+                center && { latitude: center.lat(), longitude: center.lng() },
+                map,
+                undefined
+              )
+            );
+          },
+          onClick: (e) =>
+            props.onPress?.(mapMouseEventToMapEvent(e, null, map, 'press')),
+          onDblClick: (e) =>
+            props.onDoublePress?.(
+              mapMouseEventToMapEvent(e, null, map, 'press')
+            ),
+          center: map
             ? map.getCenter()
             : {
                 lat:
@@ -326,26 +265,26 @@ function _MapView(
                   props.initialCamera?.center.longitude ||
                   props.initialRegion?.longitude ||
                   0,
-              }
-        }
-        options={{
-          scrollwheel: props.zoomEnabled,
-          disableDoubleClickZoom: !props.zoomTapEnabled,
-          zoomControl: props.zoomControlEnabled,
-          rotateControl: props.rotateEnabled,
-          minZoom: props.minZoomLevel, // TODO: Normalize value
-          maxZoom: props.maxZoomLevel, // TODO: Normalize value
-          scaleControl: props.showsScale,
-          styles: props.customMapStyle,
-          ...(props.options || {}),
-        }}
-      >
-        {props.showsUserLocation && userLocation && (
-          <UserLocationMarker coordinates={userLocation.coords} />
-        )}
-        {props.children}
-      </GoogleMap>
-    ),
+              },
+          options: {
+            scrollwheel: props.zoomEnabled,
+            disableDoubleClickZoom: !props.zoomTapEnabled,
+            zoomControl: props.zoomControlEnabled,
+            rotateControl: props.rotateEnabled,
+            minZoom: props.minZoomLevel, // TODO: Normalize value
+            maxZoom: props.maxZoomLevel, // TODO: Normalize value
+            scaleControl: props.showsScale,
+            styles: props.customMapStyle,
+            ...(props.options || {}),
+          },
+        },
+        props.showsUserLocation &&
+          userLocation &&
+          React.createElement(UserLocationMarker, {
+            coordinates: userLocation.coords,
+          }),
+        props.children
+      ),
     [
       _onRegionChange,
       _onMapReady,
@@ -367,20 +306,14 @@ function _MapView(
       props.options,
     ]
   );
-
   if (props.provider !== 'google') {
     console.warn(
       '[WARNING] `react-native-web-maps` only suppots google for now. Please pass "google" as provider in props'
     );
-
     return null;
   }
-
-  return isLoaded ? (
-    React.cloneElement(mapNode)
-  ) : (
-    <>{props.loadingFallback || null}</>
-  );
+  return isLoaded
+    ? React.cloneElement(mapNode)
+    : React.createElement(React.Fragment, null, props.loadingFallback || null);
 }
-
 export const MapView = memo(forwardRef(_MapView));
