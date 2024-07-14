@@ -24,6 +24,7 @@
     "lib": "yarn --cwd packages/react-native-web-maps",
     "docs": "yarn --cwd docs",
     "prepare": "husky install",
+    "postinstall": "npx patch-package",
     "clear": "npx rimraf ./**/node_modules ./**/yarn.lock ./**/package-lock.json ./**/.next ./**/.turbo ./**/.expo  ./**/dist"
   },
   "repository": "https://github.com/teovillanueva/react-native-web-maps",

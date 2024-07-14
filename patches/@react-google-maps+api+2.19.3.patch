@@ -1,0 +1,30 @@
+diff --git a/node_modules/@react-google-maps/api/dist/cjs.js b/node_modules/@react-google-maps/api/dist/cjs.js
+index 1e9ab80..e4fb771 100644
+--- a/node_modules/@react-google-maps/api/dist/cjs.js
++++ b/node_modules/@react-google-maps/api/dist/cjs.js
+@@ -1126,6 +1126,10 @@ class Loader {
+         this.url = url;
+         this.version = version;
+         if (Loader.instance) {
++            if(!this.options.apiKey){
++                console.warn('No api key is present');
++                return;
++            }
+             if (!fastDeepEqual$1(this.options, Loader.instance.options)) {
+                 throw new Error(`Loader must not be called again with different options. ${JSON.stringify(this.options)} !== ${JSON.stringify(Loader.instance.options)}`);
+             }
+diff --git a/node_modules/@react-google-maps/api/dist/esm.js b/node_modules/@react-google-maps/api/dist/esm.js
+index ca253fb..66288d7 100644
+--- a/node_modules/@react-google-maps/api/dist/esm.js
++++ b/node_modules/@react-google-maps/api/dist/esm.js
+@@ -1103,6 +1103,10 @@ class Loader {
+         this.url = url;
+         this.version = version;
+         if (Loader.instance) {
++            if(!this.options.apiKey){
++                console.warn('No api key is present');
++                return;
++            }
+             if (!fastDeepEqual$1(this.options, Loader.instance.options)) {
+                 throw new Error(`Loader must not be called again with different options. ${JSON.stringify(this.options)} !== ${JSON.stringify(Loader.instance.options)}`);
+             }
