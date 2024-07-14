@@ -9,6 +9,7 @@ var _api = require("@react-google-maps/api");
 var _mouseEvent = require("../utils/mouse-event");
 var _callout = require("./callout");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 //Wrapped in class component to provide methods
 //forwardRef + useImperativeHandle not sufficient because it returns a ForwardRefExoticComponent which does not seem to render in the MapView
 class Marker extends _react.default.Component {
@@ -29,13 +30,12 @@ class Marker extends _react.default.Component {
     });
   }
   render() {
-    return /*#__PURE__*/_react.default.createElement(MarkerF, {
-      ...this.props,
+    return /*#__PURE__*/_react.default.createElement(MarkerF, _extends({}, this.props, {
       calloutVisible: this.state.calloutVisible,
       toggleCalloutVisible: () => this.setState({
         calloutVisible: !this.state.calloutVisible
       })
-    });
+    }));
   }
 }
 exports.Marker = Marker;
@@ -47,6 +47,7 @@ function MarkerF(props) {
     width: 22,
     height: 40
   }); //22 x 40 is the default google maps marker size
+
   _react.default.useEffect(() => {
     if (customMarkerContainerRef.current) {
       setMarkerSize({
@@ -63,6 +64,7 @@ function MarkerF(props) {
   const hasNonCalloutChildren = _react.default.useMemo(() => !!_react.default.Children.toArray(props.children).find(child => {
     return child.type !== _callout.Callout;
   }), [props.children]);
+
   //Default anchor values to react-native-maps values (https://github.com/react-native-maps/react-native-maps/blob/master/docs/marker.md)
   const anchor = props.anchor || {
     x: 0.5,
@@ -82,7 +84,7 @@ function MarkerF(props) {
   return /*#__PURE__*/_react.default.createElement(_callout.CalloutContext.Provider, {
     value: calloutContextValue
   }, /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, hasNonCalloutChildren ? /*#__PURE__*/_react.default.createElement(_api.OverlayViewF, {
-    mapPaneName: 'overlayMouseTarget',
+    mapPaneName: "overlayMouseTarget",
     position: {
       lat: Number(props.coordinate.latitude),
       lng: Number(props.coordinate.longitude)
@@ -91,7 +93,7 @@ function MarkerF(props) {
       x: -(w * anchor.x),
       y: -(h * anchor.y)
     })
-  }, /*#__PURE__*/_react.default.createElement('div', {
+  }, /*#__PURE__*/_react.default.createElement("div", {
     ref: customMarkerContainerRef,
     onClick: () => onMarkerPress()
   }, props.children)) : /*#__PURE__*/_react.default.createElement(_api.Marker, {
@@ -115,15 +117,6 @@ function MarkerF(props) {
       opacity: props.opacity,
       draggable: props.draggable,
       anchorPoint: props.anchor ? new google.maps.Point((_props$anchor = props.anchor) === null || _props$anchor === void 0 ? void 0 : _props$anchor.x, (_props$anchor2 = props.anchor) === null || _props$anchor2 === void 0 ? void 0 : _props$anchor2.y) : null
-    },
-    position: {
-      lat: Number(props.coordinate.latitude),
-      lng: Number(props.coordinate.longitude)
-    },
-    children: props.children
-  })));
-}
-//# sourceMappingURL=marker.web.js.mapps.anchor) === null || _props$anchor2 === void 0 ? void 0 : _props$anchor2.y) : null
     },
     position: {
       lat: Number(props.coordinate.latitude),
