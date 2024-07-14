@@ -1,41 +1,23 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { useRef } from 'react';
-import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
-import { mapMouseEventToMapEvent } from '../utils/mouse-event';
-import { transformRNCameraObject } from '../utils/camera';
-import { logMethodNotImplementedWarning, logDeprecationWarning } from '../utils/log';
-import { useUserLocation } from '../hooks/use-user-location';
-import { UserLocationMarker } from './user-location-marker';
 import * as Location from 'expo-location';
-const useApiLoaderOnce = googleMapsApiKey => {
-  const isLoadedRef = useRef(false);
-  if (isLoadedRef.current) return {
-    isLoaded: true
-  };
-  const {
-    isLoaded
-  } = useJsApiLoader({
-    googleMapsApiKey: googleMapsApiKey || ''
-  });
-  if (isLoaded) isLoadedRef.current = true;
-  return {
-    isLoaded
-  };
-};
+import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
+import { useUserLocation } from '../hooks/use-user-location';
+import { transformRNCameraObject } from '../utils/camera';
+import { logDeprecationWarning, logMethodNotImplementedWarning } from '../utils/log';
+import { mapMouseEventToMapEvent } from '../utils/mouse-event';
+import { UserLocationMarker } from './user-location-marker';
 function _MapView(props, ref) {
   // State
 
   const [map, setMap] = useState(null);
   const [isGesture, setIsGesture] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const userLocation = useUserLocation({
     showUserLocation: props.showsUserLocation || false,
     requestPermission: props.showsUserLocation || !!props.onUserLocationChange || false,
     onUserLocationChange: props.onUserLocationChange,
     followUserLocation: props.followsUserLocation || false
   });
-  const {
-    isLoaded
-  } = useApiLoaderOnce(props.googleMapsApiKey || '');
 
   // Callbacks
 
@@ -242,6 +224,14 @@ function _MapView(props, ref) {
       });
     }
   }, [props.followsUserLocation, userLocation]);
+  useEffect(() => {
+    const {
+      isLoaded
+    } = useJsApiLoader({
+      googleMapsApiKey: props.googleMapsApiKey || ''
+    });
+    setIsLoaded(isLoaded);
+  }, []);
   const mapNode = useMemo(() => {
     var _props$initialCamera, _props$initialCamera2, _props$initialCamera3, _props$initialCamera4, _props$initialRegion, _props$initialCamera5, _props$initialRegion2;
     return /*#__PURE__*/React.createElement(GoogleMap, {

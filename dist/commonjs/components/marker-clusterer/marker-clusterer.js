@@ -48,10 +48,8 @@ function _MarkerClusterer(props) {
     };
     return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
       key: idx.toString()
-    }, feature.properties.cluster === true ? ((_props$renderCluster = props.renderCluster) === null || _props$renderCluster === void 0 ? void 0 : _props$renderCluster.call(props, clusterProps)) || /*#__PURE__*/_react.default.createElement(_cluster.Cluster, {
-      ...clusterProps
-    }) : feature.properties.node);
+    }, feature.properties.cluster === true ? ((_props$renderCluster = props.renderCluster) === null || _props$renderCluster === void 0 ? void 0 : _props$renderCluster.call(props, clusterProps)) || /*#__PURE__*/_react.default.createElement(_cluster.Cluster, clusterProps) : feature.properties.node);
   }));
 }
 const MarkerClusterer = exports.MarkerClusterer = /*#__PURE__*/(0, _react.memo)(_MarkerClusterer);
-//# sourceMappingURL=marker-clusterer.js.map
+//# sourceMappingURL=marker-clusterer.js.map-clusterer.js.map

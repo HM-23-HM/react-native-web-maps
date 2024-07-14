@@ -1,6 +1,7 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { ForwardedRef, useRef } from 'react';
+import * as Location from 'expo-location';
 import React, {
+  ForwardedRef,
   forwardRef,
   memo,
   useCallback,
@@ -9,6 +10,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import type RNMapView from 'react-native-maps';
 import type {
   Address,
   Camera,
@@ -19,26 +21,14 @@ import type {
   Region,
   SnapshotOptions,
 } from 'react-native-maps';
-import type RNMapView from 'react-native-maps';
-import { mapMouseEventToMapEvent } from '../utils/mouse-event';
+import { useUserLocation } from '../hooks/use-user-location';
 import { transformRNCameraObject } from '../utils/camera';
 import {
-  logMethodNotImplementedWarning,
   logDeprecationWarning,
+  logMethodNotImplementedWarning,
 } from '../utils/log';
-import { useUserLocation } from '../hooks/use-user-location';
+import { mapMouseEventToMapEvent } from '../utils/mouse-event';
 import { UserLocationMarker } from './user-location-marker';
-import * as Location from 'expo-location';
-
-const useApiLoaderOnce = (googleMapsApiKey: string) => {
-  const isLoadedRef = useRef(false);
-  if (isLoadedRef.current) return { isLoaded: true };
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: googleMapsApiKey || '',
-  });
-  if (isLoaded) isLoadedRef.current = true;
-  return { isLoaded };
-};
 
 function _MapView(
   props: MapViewProps & { nonce: string },
@@ -48,6 +38,7 @@ function _MapView(
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [isGesture, setIsGesture] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const userLocation = useUserLocation({
     showUserLocation: props.showsUserLocation || false,
@@ -56,8 +47,6 @@ function _MapView(
     onUserLocationChange: props.onUserLocationChange,
     followUserLocation: props.followsUserLocation || false,
   });
-
-  const { isLoaded } = useApiLoaderOnce(props.googleMapsApiKey || '');
 
   // Callbacks
 
@@ -291,6 +280,13 @@ function _MapView(
       });
     }
   }, [props.followsUserLocation, userLocation]);
+
+  useEffect(() => {
+    const { isLoaded } = useJsApiLoader({
+      googleMapsApiKey: props.googleMapsApiKey || '',
+    });
+    setIsLoaded(isLoaded);
+  }, []);
 
   const mapNode = useMemo(
     () => (
