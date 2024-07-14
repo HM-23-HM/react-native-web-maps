@@ -30,15 +30,13 @@ import {
 import { mapMouseEventToMapEvent } from '../utils/mouse-event';
 import { UserLocationMarker } from './user-location-marker';
 
-function _MapView(
-  props: MapViewProps & { nonce: string },
-  ref: ForwardedRef<Partial<RNMapView>>
-) {
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+
+function _MapView(props: MapViewProps, ref: ForwardedRef<Partial<RNMapView>>) {
   // State
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [isGesture, setIsGesture] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   const userLocation = useUserLocation({
     showUserLocation: props.showsUserLocation || false,
@@ -46,6 +44,12 @@ function _MapView(
       props.showsUserLocation || !!props.onUserLocationChange || false,
     onUserLocationChange: props.onUserLocationChange,
     followUserLocation: props.followsUserLocation || false,
+  });
+
+  console.log({ props });
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: GOOGLE_MAPS_API_KEY ?? (props.googleMapsApiKey || ''),
   });
 
   // Callbacks
@@ -280,13 +284,6 @@ function _MapView(
       });
     }
   }, [props.followsUserLocation, userLocation]);
-
-  useEffect(() => {
-    const { isLoaded } = useJsApiLoader({
-      googleMapsApiKey: props.googleMapsApiKey || '',
-    });
-    setIsLoaded(isLoaded);
-  }, []);
 
   const mapNode = useMemo(
     () => (
