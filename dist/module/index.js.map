@@ -1,1 +1,1 @@
-{"version":3,"names":[],"sources":["index.js"],"sourcesContent":["export * from './components/marker-clusterer';\n"],"mappings":"AAAA,cAAc,+BAA+B","ignoreList":[]}
+{"version":3,"names":[],"sources":["index.tsx"],"sourcesContent":["export * from './components/marker-clusterer';\n"],"mappings":"AAAA,cAAc,+BAA+B","ignoreList":[]}

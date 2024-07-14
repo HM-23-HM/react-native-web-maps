@@ -11,6 +11,7 @@ exports.makePoint = exports.makeOverlays = exports.makeOverlay = exports.makeLin
  * TODO: Type this bs
  * https://github.com/react-native-maps/react-native-maps/blob/master/src/Geojson.js
  */
+
 const makeOverlays = features => {
   const points = features.filter(f => f.geometry && (f.geometry.type === 'Point' || f.geometry.type === 'MultiPoint')).map(feature => makeCoordinates(feature).map(coordinates => makeOverlay(coordinates, feature))).reduce(flatten, []).map(overlay => ({
     ...overlay,
@@ -109,4 +110,4 @@ const getStrokeWidth = (props, overlay) => {
   return;
 };
 exports.getStrokeWidth = getStrokeWidth;
-//# sourceMappingURL=geojson.js.mapp
+//# sourceMappingURL=geojson.js.map

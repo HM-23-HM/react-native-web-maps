@@ -4,7 +4,6 @@
  * I guess this has been tested by the creators lol
  * https://github.com/react-native-maps/react-native-maps/blob/master/src/Geojson.js
  */
-
 import React from 'react';
 import { getColor, getStrokeWidth, makeOverlays } from '../utils/geojson';
 import { Marker } from './marker';
@@ -71,4 +70,4 @@ export function Geojson(props) {
     return null;
   }));
 }
-//# sourceMappingURL=geojson.js.map
+//# sourceMappingURL=geojson.js.mapp
