@@ -1,5 +1,5 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import type { ForwardedRef } from 'react';
+import { ForwardedRef, useRef } from 'react';
 import React, {
   forwardRef,
   memo,
@@ -30,6 +30,16 @@ import { useUserLocation } from '../hooks/use-user-location';
 import { UserLocationMarker } from './user-location-marker';
 import * as Location from 'expo-location';
 
+const useApiLoaderOnce = (googleMapsApiKey: string) => {
+  const isLoadedRef = useRef(false);
+  if (isLoadedRef.current) return { isLoaded: true };
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: googleMapsApiKey || '',
+  });
+  if (isLoaded) isLoadedRef.current = true;
+  return { isLoaded };
+};
+
 function _MapView(
   props: MapViewProps & { nonce: string },
   ref: ForwardedRef<Partial<RNMapView>>
@@ -47,10 +57,7 @@ function _MapView(
     followUserLocation: props.followsUserLocation || false,
   });
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: props.googleMapsApiKey || '',
-    nonce: props.nonce,
-  });
+  const { isLoaded } = useApiLoaderOnce(props.googleMapsApiKey || '');
 
   // Callbacks
 

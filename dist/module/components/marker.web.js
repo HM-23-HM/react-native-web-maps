@@ -1,4 +1,3 @@
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 import React from 'react';
 import { Marker as GMMarker, OverlayViewF as GMOverlayView, useGoogleMap } from '@react-google-maps/api';
 import { mapMouseEventToMapEvent } from '../utils/mouse-event';
@@ -23,12 +22,13 @@ export class Marker extends React.Component {
     });
   }
   render() {
-    return /*#__PURE__*/React.createElement(MarkerF, _extends({}, this.props, {
+    return /*#__PURE__*/React.createElement(MarkerF, {
+      ...this.props,
       calloutVisible: this.state.calloutVisible,
       toggleCalloutVisible: () => this.setState({
         calloutVisible: !this.state.calloutVisible
       })
-    }));
+    });
   }
 }
 function MarkerF(props) {
@@ -39,7 +39,6 @@ function MarkerF(props) {
     width: 22,
     height: 40
   }); //22 x 40 is the default google maps marker size
-
   React.useEffect(() => {
     if (customMarkerContainerRef.current) {
       setMarkerSize({
@@ -56,7 +55,6 @@ function MarkerF(props) {
   const hasNonCalloutChildren = React.useMemo(() => !!React.Children.toArray(props.children).find(child => {
     return child.type !== Callout;
   }), [props.children]);
-
   //Default anchor values to react-native-maps values (https://github.com/react-native-maps/react-native-maps/blob/master/docs/marker.md)
   const anchor = props.anchor || {
     x: 0.5,
@@ -76,7 +74,7 @@ function MarkerF(props) {
   return /*#__PURE__*/React.createElement(CalloutContext.Provider, {
     value: calloutContextValue
   }, /*#__PURE__*/React.createElement(React.Fragment, null, hasNonCalloutChildren ? /*#__PURE__*/React.createElement(GMOverlayView, {
-    mapPaneName: "overlayMouseTarget",
+    mapPaneName: 'overlayMouseTarget',
     position: {
       lat: Number(props.coordinate.latitude),
       lng: Number(props.coordinate.longitude)
@@ -85,7 +83,7 @@ function MarkerF(props) {
       x: -(w * anchor.x),
       y: -(h * anchor.y)
     })
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement('div', {
     ref: customMarkerContainerRef,
     onClick: () => onMarkerPress()
   }, props.children)) : /*#__PURE__*/React.createElement(GMMarker, {
@@ -109,6 +107,15 @@ function MarkerF(props) {
       opacity: props.opacity,
       draggable: props.draggable,
       anchorPoint: props.anchor ? new google.maps.Point((_props$anchor = props.anchor) === null || _props$anchor === void 0 ? void 0 : _props$anchor.x, (_props$anchor2 = props.anchor) === null || _props$anchor2 === void 0 ? void 0 : _props$anchor2.y) : null
+    },
+    position: {
+      lat: Number(props.coordinate.latitude),
+      lng: Number(props.coordinate.longitude)
+    },
+    children: props.children
+  })));
+}
+//# sourceMappingURL=marker.web.js.mapps.anchor) === null || _props$anchor2 === void 0 ? void 0 : _props$anchor2.y) : null
     },
     position: {
       lat: Number(props.coordinate.latitude),

@@ -16,7 +16,6 @@ function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return 
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
 function _MapView(props, ref) {
   // State
-
   const [map, setMap] = (0, _react.useState)(null);
   const [isGesture, setIsGesture] = (0, _react.useState)(false);
   const userLocation = (0, _useUserLocation.useUserLocation)({
@@ -31,9 +30,7 @@ function _MapView(props, ref) {
     googleMapsApiKey: props.googleMapsApiKey || '',
     nonce: props.nonce
   });
-
   // Callbacks
-
   const _onMapReady = (0, _react.useCallback)(_map => {
     var _props$onMapReady;
     setMap(_map);
@@ -81,9 +78,7 @@ function _MapView(props, ref) {
     }
     setIsGesture(false);
   }, [map, props.onRegionChange, isGesture]);
-
   // Ref handle
-
   (0, _react.useImperativeHandle)(ref, () => ({
     async getCamera() {
       const center = map === null || map === void 0 ? void 0 : map.getCenter();
@@ -123,21 +118,17 @@ function _MapView(props, ref) {
     },
     animateToRegion(region, _duration) {
       const bounds = new google.maps.LatLngBounds();
-
       // Source: https://github.com/react-native-maps/react-native-maps/blob/master/android/src/main/java/com/airbnb/android/react/maps/AirMapView.java#L503
-
       // southWest
       bounds.extend({
         lat: region.latitude - region.latitudeDelta / 2,
         lng: region.longitude - region.longitudeDelta / 2
       });
-
       // northEast
       bounds.extend({
         lat: region.latitude + region.latitudeDelta / 2,
         lng: region.longitude + region.longitudeDelta / 2
       });
-
       // panToBounds not working??
       // map?.panToBounds(bounds);
       map === null || map === void 0 || map.fitBounds(bounds);
@@ -226,9 +217,7 @@ function _MapView(props, ref) {
       (0, _log.logMethodNotImplementedWarning)('setIndoorActiveLevelIndex');
     }
   }), [map]);
-
   // Side effects
-
   (0, _react.useEffect)(() => {
     if (props.followsUserLocation && userLocation) {
       map === null || map === void 0 || map.panTo({
@@ -291,7 +280,10 @@ function _MapView(props, ref) {
     console.warn('[WARNING] `react-native-web-maps` only suppots google for now. Please pass "google" as provider in props');
     return null;
   }
-  return isLoaded ? ( /*#__PURE__*/_react.default.cloneElement(mapNode)) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, props.loadingFallback || null);
+  return isLoaded ? /*#__PURE__*/_react.default.cloneElement(mapNode) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, props.loadingFallback || null);
+}
+const MapView = exports.MapView = /*#__PURE__*/(0, _react.memo)( /*#__PURE__*/(0, _react.forwardRef)(_MapView));
+//# sourceMappingURL=map-view.js.mapact.default.cloneElement(mapNode)) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, props.loadingFallback || null);
 }
 const MapView = exports.MapView = /*#__PURE__*/(0, _react.memo)( /*#__PURE__*/(0, _react.forwardRef)(_MapView));
 //# sourceMappingURL=map-view.js.map
