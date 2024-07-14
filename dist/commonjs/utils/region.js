@@ -8,6 +8,7 @@ exports.getBoundByRegion = void 0;
  * Code taken from https://github.com/react-native-maps/react-native-maps/issues/356
  * Solution by https://github.com/MatsMaker
  */
+
 const getBoundByRegion = (region, scale = 1) => {
   /*
    * Latitude : max/min +90 to -90
@@ -45,10 +46,12 @@ const getBoundByRegion = (region, scale = 1) => {
   const latOffset = region.latitudeDelta / 2 * scale;
   const lngD = region.longitudeDelta < -180 ? 360 + region.longitudeDelta : region.longitudeDelta;
   const lngOffset = lngD / 2 * scale;
+
   // bounds.nw.lng,
   //           bounds.se.lat,
   //           bounds.se.lng,
   //           bounds.nw.lat
+
   return [calcMinLngByOffset(region.longitude, lngOffset),
   // westLng - min lng
   calcMinLatByOffset(region.latitude, latOffset),
@@ -59,4 +62,4 @@ const getBoundByRegion = (region, scale = 1) => {
   ];
 };
 exports.getBoundByRegion = getBoundByRegion;
-//# sourceMappingURL=region.js.mapmap
+//# sourceMappingURL=region.js.map

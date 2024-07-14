@@ -283,5 +283,5 @@ function _MapView(props, ref) {
   return isLoaded ? /*#__PURE__*/_react.default.cloneElement(mapNode) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, props.loadingFallback || null);
 }
 const MapView = exports.MapView = /*#__PURE__*/(0, _react.memo)( /*#__PURE__*/(0, _react.forwardRef)(_MapView));
-//# sourceMappingURL=map-view.js.mapxports.MapView = /*#__PURE__*/(0, _react.memo)( /*#__PURE__*/(0, _react.forwardRef)(_MapView));
+//# sourceMappingURL=map-view.js.mapRE__*/(0, _react.memo)( /*#__PURE__*/(0, _react.forwardRef)(_MapView));
 //# sourceMappingURL=map-view.js.map

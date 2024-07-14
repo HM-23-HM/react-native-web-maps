@@ -26,19 +26,20 @@ export function Callout(props) {
     markerSize,
     anchor
   } = React.useContext(CalloutContext);
+
   //By default callout is positioned to bottom center
   //i.e. is at anchor: (0.5, 1)
   //This compensates to match expected result using the provided anchor prop
   const xOffset = -(markerSize.width * (0.5 - anchor.x));
   const yOffset = -(markerSize.height * (1 - anchor.y));
-  return calloutVisible ? /*#__PURE__*/React.createElement('div', {
+  return calloutVisible ? /*#__PURE__*/React.createElement("div", {
     onClick: e => {
       var _props$onPress;
       (_props$onPress = props.onPress) === null || _props$onPress === void 0 || _props$onPress.call(props, mapMouseEventToMapEvent(null, coordinate, map, 'callout-press'));
       e.stopPropagation(); //Prevent marker click handler from being called
     }
   }, props.tooltip ? /*#__PURE__*/React.createElement(GMOverlayView, {
-    mapPaneName: 'overlayMouseTarget',
+    mapPaneName: "overlayMouseTarget",
     position: {
       lat: Number(coordinate.latitude),
       lng: Number(coordinate.longitude)
@@ -47,7 +48,7 @@ export function Callout(props) {
       x: xOffset,
       y: yOffset
     })
-  }, /*#__PURE__*/React.createElement('div', {
+  }, /*#__PURE__*/React.createElement("div", {
     style: {
       transform: 'translate(-50%,-100%)'
     }
@@ -62,4 +63,4 @@ export function Callout(props) {
     onCloseClick: () => toggleCalloutVisible()
   }, /*#__PURE__*/React.createElement(React.Fragment, null, props.children))) : null;
 }
-//# sourceMappingURL=callout.js.mapp
+//# sourceMappingURL=callout.js.map

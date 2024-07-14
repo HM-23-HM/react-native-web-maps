@@ -39,10 +39,8 @@ function _MarkerClusterer(props) {
     };
     return /*#__PURE__*/React.createElement(React.Fragment, {
       key: idx.toString()
-    }, feature.properties.cluster === true ? ((_props$renderCluster = props.renderCluster) === null || _props$renderCluster === void 0 ? void 0 : _props$renderCluster.call(props, clusterProps)) || /*#__PURE__*/React.createElement(Cluster, {
-      ...clusterProps
-    }) : feature.properties.node);
+    }, feature.properties.cluster === true ? ((_props$renderCluster = props.renderCluster) === null || _props$renderCluster === void 0 ? void 0 : _props$renderCluster.call(props, clusterProps)) || /*#__PURE__*/React.createElement(Cluster, clusterProps) : feature.properties.node);
   }));
 }
 export const MarkerClusterer = /*#__PURE__*/memo(_MarkerClusterer);
-//# sourceMappingURL=marker-clusterer.js.map
+//# sourceMappingURL=marker-clusterer.js.map-clusterer.js.map

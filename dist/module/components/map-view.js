@@ -1,26 +1,28 @@
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import * as Location from 'expo-location';
 import React, { forwardRef, memo, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
-import { useUserLocation } from '../hooks/use-user-location';
-import { transformRNCameraObject } from '../utils/camera';
-import { logDeprecationWarning, logMethodNotImplementedWarning } from '../utils/log';
 import { mapMouseEventToMapEvent } from '../utils/mouse-event';
+import { transformRNCameraObject } from '../utils/camera';
+import { logMethodNotImplementedWarning, logDeprecationWarning } from '../utils/log';
+import { useUserLocation } from '../hooks/use-user-location';
 import { UserLocationMarker } from './user-location-marker';
+import * as Location from 'expo-location';
 function _MapView(props, ref) {
   // State
-
   const [map, setMap] = useState(null);
   const [isGesture, setIsGesture] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   const userLocation = useUserLocation({
     showUserLocation: props.showsUserLocation || false,
     requestPermission: props.showsUserLocation || !!props.onUserLocationChange || false,
     onUserLocationChange: props.onUserLocationChange,
     followUserLocation: props.followsUserLocation || false
   });
-
+  const {
+    isLoaded
+  } = useJsApiLoader({
+    googleMapsApiKey: props.googleMapsApiKey || '',
+    nonce: props.nonce
+  });
   // Callbacks
-
   const _onMapReady = useCallback(_map => {
     var _props$onMapReady;
     setMap(_map);
@@ -68,9 +70,7 @@ function _MapView(props, ref) {
     }
     setIsGesture(false);
   }, [map, props.onRegionChange, isGesture]);
-
   // Ref handle
-
   useImperativeHandle(ref, () => ({
     async getCamera() {
       const center = map === null || map === void 0 ? void 0 : map.getCenter();
@@ -110,21 +110,17 @@ function _MapView(props, ref) {
     },
     animateToRegion(region, _duration) {
       const bounds = new google.maps.LatLngBounds();
-
       // Source: https://github.com/react-native-maps/react-native-maps/blob/master/android/src/main/java/com/airbnb/android/react/maps/AirMapView.java#L503
-
       // southWest
       bounds.extend({
         lat: region.latitude - region.latitudeDelta / 2,
         lng: region.longitude - region.longitudeDelta / 2
       });
-
       // northEast
       bounds.extend({
         lat: region.latitude + region.latitudeDelta / 2,
         lng: region.longitude + region.longitudeDelta / 2
       });
-
       // panToBounds not working??
       // map?.panToBounds(bounds);
       map === null || map === void 0 || map.fitBounds(bounds);
@@ -213,9 +209,7 @@ function _MapView(props, ref) {
       logMethodNotImplementedWarning('setIndoorActiveLevelIndex');
     }
   }), [map]);
-
   // Side effects
-
   useEffect(() => {
     if (props.followsUserLocation && userLocation) {
       map === null || map === void 0 || map.panTo({
@@ -224,14 +218,6 @@ function _MapView(props, ref) {
       });
     }
   }, [props.followsUserLocation, userLocation]);
-  useEffect(() => {
-    const {
-      isLoaded
-    } = useJsApiLoader({
-      googleMapsApiKey: props.googleMapsApiKey || ''
-    });
-    setIsLoaded(isLoaded);
-  }, []);
   const mapNode = useMemo(() => {
     var _props$initialCamera, _props$initialCamera2, _props$initialCamera3, _props$initialCamera4, _props$initialRegion, _props$initialCamera5, _props$initialRegion2;
     return /*#__PURE__*/React.createElement(GoogleMap, {
@@ -286,7 +272,8 @@ function _MapView(props, ref) {
     console.warn('[WARNING] `react-native-web-maps` only suppots google for now. Please pass "google" as provider in props');
     return null;
   }
-  return isLoaded ? ( /*#__PURE__*/React.cloneElement(mapNode)) : /*#__PURE__*/React.createElement(React.Fragment, null, props.loadingFallback || null);
+  return isLoaded ? /*#__PURE__*/React.cloneElement(mapNode) : /*#__PURE__*/React.createElement(React.Fragment, null, props.loadingFallback || null);
 }
 export const MapView = /*#__PURE__*/memo( /*#__PURE__*/forwardRef(_MapView));
+//# sourceMappingURL=map-view.js.map const MapView = /*#__PURE__*/memo( /*#__PURE__*/forwardRef(_MapView));
 //# sourceMappingURL=map-view.js.map
