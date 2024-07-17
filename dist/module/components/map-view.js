@@ -275,5 +275,5 @@ function _MapView(props, ref) {
   return isLoaded ? /*#__PURE__*/React.cloneElement(mapNode) : /*#__PURE__*/React.createElement(React.Fragment, null, props.loadingFallback || null);
 }
 export const MapView = /*#__PURE__*/memo( /*#__PURE__*/forwardRef(_MapView));
-//# sourceMappingURL=map-view.js.map const MapView = /*#__PURE__*/memo( /*#__PURE__*/forwardRef(_MapView));
+//# sourceMappingURL=map-view.js.map /*#__PURE__*/memo( /*#__PURE__*/forwardRef(_MapView));
 //# sourceMappingURL=map-view.js.map
