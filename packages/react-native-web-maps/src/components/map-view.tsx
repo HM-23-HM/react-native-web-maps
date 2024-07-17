@@ -32,7 +32,10 @@ import { UserLocationMarker } from './user-location-marker';
 
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
-function _MapView(props: MapViewProps, ref: ForwardedRef<Partial<RNMapView>>) {
+function _MapView(
+  props: MapViewProps & { zoom?: number },
+  ref: ForwardedRef<Partial<RNMapView>>
+) {
   // State
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -45,8 +48,6 @@ function _MapView(props: MapViewProps, ref: ForwardedRef<Partial<RNMapView>>) {
     onUserLocationChange: props.onUserLocationChange,
     followUserLocation: props.followsUserLocation || false,
   });
-
-  console.log({ props });
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: GOOGLE_MAPS_API_KEY ?? (props.googleMapsApiKey || ''),
@@ -293,7 +294,7 @@ function _MapView(props: MapViewProps, ref: ForwardedRef<Partial<RNMapView>>) {
         onDragStart={_onDragStart}
         onDragEnd={_onRegionChangeComplete}
         mapContainerStyle={{ flex: 1 }}
-        zoom={props.initialCamera?.zoom || 3}
+        zoom={props.zoom ?? (props.initialCamera?.zoom || 3)}
         heading={props.initialCamera?.heading}
         tilt={props.initialCamera?.pitch}
         onDrag={() => {
